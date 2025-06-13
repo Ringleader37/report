@@ -436,7 +436,7 @@ text += ` ${vibukhWord} ${this.formData.explosionCount} ${this.formData.explosio
 
           if (this.showRozxid) {
             this.formData.rozxid.forEach(item => {
-              if (item.type && item.quantity) text += `\n${item.type} - ${item.quantity}`;
+              if (item.type && item.quantity) text += `\n${item.type} —— ${item.quantity}`;
             });
           }
 
@@ -446,7 +446,7 @@ text += ` ${vibukhWord} ${this.formData.explosionCount} ${this.formData.explosio
   this.formData.result === 'ЗНИЩЕНО'
 ) {
   const targetNumFormatted = this.formData.targetNumber === '0000' ? 'Б/Н' : this.formData.targetNumber;
-let analytics = `${this.formData.time ? this.formData.time.replace(':', '.') : ''} - №${targetNumFormatted} - ${this.formData.pidrozdil} в районі ${this.formData.naseleniyPunkt} Чернігівська область ${this.formData.zbroya} (А-${this.formData.angle}, Д-${this.formData.distance}, В-${this.formData.height}, К-${this.formData.krok})`;
+let analytics = `${this.formData.time ? this.formData.time.replace(':', '.') : ''} — №${targetNumFormatted} — ${this.formData.pidrozdil} в районі ${this.formData.naseleniyPunkt} Чернігівська область ${this.formData.zbroya} (А-${this.formData.angle}, Д-${this.formData.distance}, В-${this.formData.height}, К-${this.formData.krok})`;
 
 
   if (this.formData.targetClass === 'БПЛА' || this.formData.targetClass === 'КР') {
