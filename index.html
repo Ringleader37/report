@@ -350,6 +350,7 @@
   this.formData.distance = this.formData.distance || '0';
   this.formData.height = this.formData.height || '0';
   this.formData.krok = this.formData.krok || '0';
+  this.formData.targetNumber = this.formData.targetNumber || '0000';
           // Функція нормалізації всіх типів боєприпасів
           const normalizeAmmoReport = (items) => {
   const regexNabiy = /^(Набій|Снаряд)\s([\d,]+)х\d+\sмм/;
@@ -403,8 +404,9 @@ let text = `Підрозділ: ${this.formData.pidrozdil}
 Результат: ${this.formData.result}`;
 
           if (this.formData.result === 'вибух') {
-            text += `\nОпис: А-${this.formData.angle}, Д-${this.formData.distance}, В-${this.formData.height}, К-${this.formData.krok}`;
-            text += ` вибух ${this.formData.explosionCount} ${this.formData.explosionPlace} ${this.formData.explosionStatus}`;
+            const vibukhWord = Number(this.formData.explosionCount) > 1 ? 'вибухи' : 'вибух';
+text += `\nОпис: А-${this.formData.angle}, Д-${this.formData.distance}, В-${this.formData.height}, К-${this.formData.krok}`;
+text += ` ${vibukhWord} ${this.formData.explosionCount} ${this.formData.explosionPlace} ${this.formData.explosionStatus}`;
           } else if (this.formData.result === 'не застосовувалась') {
           text += `\nОпис: А-${this.formData.angle}, Д-${this.formData.distance}, В-${this.formData.height}, К-${this.formData.krok}`;
           if (this.formData.detectionMode) text += `, ${this.formData.detectionMode}`;
@@ -443,7 +445,9 @@ let text = `Підрозділ: ${this.formData.pidrozdil}
   this.formData.result === 'не уражено' ||
   this.formData.result === 'ЗНИЩЕНО'
 ) {
-  let analytics = `${this.formData.time ? this.formData.time.replace(':', '.') : ''} — №${this.formData.targetNumber} — ${this.formData.pidrozdil} в районі ${this.formData.naseleniyPunkt} Чернігівська область ${this.formData.zbroya} (А-${this.formData.angle}, Д-${this.formData.distance}, В-${this.formData.height}, К-${this.formData.krok})`;
+  const targetNumFormatted = this.formData.targetNumber === '0000' ? 'Б/Н' : this.formData.targetNumber;
+let analytics = `${this.formData.time ? this.formData.time.replace(':', '.') : ''} - №${targetNumFormatted} - ${this.formData.pidrozdil} в районі ${this.formData.naseleniyPunkt} Чернігівська область ${this.formData.zbroya} (А-${this.formData.angle}, Д-${this.formData.distance}, В-${this.formData.height}, К-${this.formData.krok})`;
+
 
   if (this.formData.targetClass === 'БПЛА' || this.formData.targetClass === 'КР') {
     if (this.formData.result === 'не уражено') {
