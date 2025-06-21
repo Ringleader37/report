@@ -86,8 +86,6 @@
                 <input type="text" v-model="formData.angle" v-mask="'###'" placeholder="360" maxlength="3" class="w-full p-2 rounded bg-[#454353] text-gray-900" @input="onAngleInput" />
                 <span class="w-auto">Д-</span>
                 <input type="text" v-model="formData.distance" v-mask="'#####'" inputmode="numeric" pattern="\d*" placeholder="00000" maxlength="5" class="w-full p-2 rounded bg-[#454353] text-gray-900" />
-                <span class="w-auto">К-</span>
-                <input type="text" v-model="formData.krok" v-mask="'###'" placeholder="360" maxlength="3" class="w-full p-2 rounded bg-[#454353] text-gray-900" @input="onKrokInput" />
               </div>
               <div class="flex gap-4">
                 <input type="text" value="вибух" readonly class="w-full p-2 rounded bg-transparent border-gray-700 border-2 text-center text-gray-300" />
@@ -195,7 +193,7 @@
                     <option value="" disabled selected hidden>Звання</option>
                     <option v-for="rank in ranks" :value="rank">{{ rank }}</option>
                   </select>
-                  <input type="text" v-model="person.pib" placeholder="Зулужний В.Ф." class="w-full p-2 rounded bg-[#454353] text-gray-900" />
+                  <input type="text" v-model="person.pib" placeholder="Залужний В.Ф." class="w-full p-2 rounded bg-[#454353] text-gray-900" />
                   <button type="button" class="bg-red-700 hover:bg-red-800 text-white rounded px-3 py-2" @click="removePersonnel(index)">Видалити</button>
                 </div>
                 <button type="button" @click="addPersonnel" class="bg-blue-800 hover:bg-blue-900 text-white rounded px-3 py-2 mt-2">Додати особовий склад</button>
@@ -245,14 +243,14 @@
           explosionStatus: ''
         },
         units: [
-          '138 ртбр', '96 зрбр', '40 брта', '119 обр ТРО', '638 озкб', '631 озкб',
+          '138 ртбр', '96 зрбр', '40 брта', '116 обр ТРО', '119 обр ТРО', '638 озкб', '631 озкб',
           '156 зрп', '110 ак', '21 ак', '121 ак', 'ПвК Центр', '223 зрп',
           '105 ПрикЗ', 'ДФТГ'
         ],
         prefixes: ['МВГ', 'ВГ'],
         weapons: [
           'із ПЗРК «Ігла-1»', 'із ПЗРК «Ігла»', 'із ПЗРК «Mistral»',
-          'із ПЗРК «Stinger»', 'із ЗКУ-1', 'із ЗУ-23-2',
+          'із ПЗРК «Stinger»', 'із ЗРК «CA-95»', 'із ЗКУ-1', 'із ЗУ-23-2',
           'із АЗГ С-60', 'із АЗГ М75', 'із ЗУ М55',
           'із MR-2 Viktor', 'із ВКК КПВТ', 'із ВКК ДШКМ',
           'із ВКК «Browning M2»', 'із ВКК «Сanik M2 QCB»',
@@ -273,7 +271,7 @@
         results: ['не застосовувалась', 'не уражено', 'ЗНИЩЕНО', 'вибух'],
         actions: ['обстріляно', 'знищено'],
         uavTypes: ['Shahed', 'Гербера', 'Пародія', 'Невідомий'],
-        ranks: ['с-т', 'ст. с-т', 'мол. с-нт', 'с-нт', 'ст. с-нт', 'гол. с-нт', 'мол. л-т', 'л-т', 'ст. л-т', 'к-н', 'м-р', 'п.п-к', 'п-к']
+        ranks: ['с-т', 'ст. с-т', 'мол. с-нт', 'с-нт', 'ст. с-нт', 'гол. с-нт', 'шт. с-нт', 'м. с-нт', 'мол. л-т', 'л-т', 'ст. л-т', 'к-н', 'м-р', 'п.п-к', 'п-к']
       },
       computed: {
         showRozxid() {
@@ -289,28 +287,34 @@
         }
       },
       watch: {
-        formData: {
-          handler(newVal) {
-            localStorage.setItem('myFormData', JSON.stringify(newVal));
-          },
-          deep: true
-        },
-        'formData.pozivniy': {
-          handler(newVal) {
-            if (newVal && newVal.charAt(0) !== newVal.charAt(0).toUpperCase()) {
-              this.formData.pozivniy = newVal.charAt(0).toUpperCase() + newVal.slice(1);
-            }
-          },
-          deep: true
-        },
-        'formData.targetClass'(newVal) {
-          if (newVal === 'КР') {
-            this.formData.type = '';
-          } else if (!this.formData.type) {
-            this.formData.type = this.uavTypes[0];
-          }
-        }
-      },
+  formData: {
+    handler(newVal) {
+      localStorage.setItem('myFormData', JSON.stringify(newVal));
+    },
+    deep: true
+  },
+  'formData.pozivniy': {
+    handler(newVal) {
+      if (newVal && newVal.charAt(0) !== newVal.charAt(0).toUpperCase()) {
+        this.formData.pozivniy = newVal.charAt(0).toUpperCase() + newVal.slice(1);
+      }
+    },
+    deep: true
+  },
+  'formData.targetClass'(newVal) {
+    if (newVal === 'КР') {
+      this.formData.type = '';
+    } else if (!this.formData.type) {
+      this.formData.type = this.uavTypes[0];
+    }
+  },
+  'formData.result'(newVal) {
+    if (newVal === 'вибух') {
+      this.formData.height = '';
+      this.formData.krok = '';
+    }
+  }
+},
       methods: {
         addRozxid() { this.formData.rozxid.push({ type: '', quantity: null }); },
         removeRozxid(index) { this.formData.rozxid.splice(index, 1); },
@@ -403,11 +407,11 @@ let text = `Підрозділ: ${this.formData.pidrozdil}
 Висота: ${this.formData.height}
 Результат: ${this.formData.result}`;
 
-          if (this.formData.result === 'вибух') {
-            const vibukhWord = Number(this.formData.explosionCount) > 1 ? 'вибухи' : 'вибух';
-text += `\nОпис: А-${this.formData.angle}, Д-${this.formData.distance}, В-${this.formData.height}, К-${this.formData.krok}`;
-text += ` ${vibukhWord} ${this.formData.explosionCount} ${this.formData.explosionPlace} ${this.formData.explosionStatus}`;
-          } else if (this.formData.result === 'не застосовувалась') {
+if (this.formData.result === 'вибух') {
+  const vibukhWord = Number(this.formData.explosionCount) > 1 ? 'вибухи' : 'вибух';
+  text += `\nОпис: А-${this.formData.angle}, Д-${this.formData.distance}`;
+  text += ` ${vibukhWord} ${this.formData.explosionCount} ${this.formData.explosionPlace} ${this.formData.explosionStatus}`;
+} else if (this.formData.result === 'не застосовувалась') {
           text += `\nОпис: А-${this.formData.angle}, Д-${this.formData.distance}, В-${this.formData.height}, К-${this.formData.krok}`;
           if (this.formData.detectionMode) text += `, ${this.formData.detectionMode}`;
           if (this.formData.targetCount) text += ` ${this.formData.targetCount}`;
